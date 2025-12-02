@@ -1,12 +1,30 @@
+import fastifyStatic from "@fastify/static";
 import Fastify from "fastify";
+import path from "path";
 
 const buildServer = () => {
   const fastify = Fastify({
     logger: true
   });
+  
+  fastify.get("/api/hello", async () => {
+    return { message: "Hello from API" };
+  });
 
-  fastify.get("/", async () => {
-    return { message: "Hello from Fastify + TS 🚀" };
+  // Путь к клиентской сборке: dist/client
+  fastify.register(fastifyStatic, {
+    root: path.join(__dirname, "client"),
+    prefix: "/",
+  });
+
+  fastify.setNotFoundHandler((req, reply) => {
+    const url = req.raw.url || "";
+
+    if (url.startsWith("/api")) {
+      return reply.status(404).send({ error: "Not Found" });
+    }
+    
+    return reply.sendFile("index.html");
   });
 
   return fastify;
