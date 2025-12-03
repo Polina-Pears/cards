@@ -1,7 +1,13 @@
 services:
   cards-app:
+    build:  
+      context: .
+      dockerfile: Dockerfile
     image: cards-app-prod
     container_name: cards-app
     restart: unless-stopped
-    ports:
-      - "80:3000"
+    env_file:              
+      - .env
+
+    ports:                 
+      - "3000:3000"
