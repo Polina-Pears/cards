@@ -1,0 +1,7 @@
+services:
+  cards-app:
+    image: cards-app-prod
+    container_name: cards-app
+    restart: unless-stopped
+    ports:
+      - "80:3000"
