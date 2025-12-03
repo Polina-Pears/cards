@@ -1,31 +1,64 @@
+import dotenv from "dotenv";
+import fastifyJwt from "@fastify/jwt";
+// import fastifyCors from "@fastify/cors";
 import fastifyStatic from "@fastify/static";
 import Fastify from "fastify";
 import path from "path";
+import { signUpHandler } from "./handlers/signUpHandler";
+import { signInHandler } from "./handlers/signInHandler.ts";
+import { notFoundHandler } from "./handlers/notFoundHandler";
+import {
+  API_SIGNUP,
+  API_SIGNIN,
+  STATIC_PREFIX,
+  STATIC_ROOT,
+  // HTTP_METHODS
+} from "./constants/api";
+
+dotenv.config();
+
+declare module "@fastify/jwt" {
+  interface FastifyJWT {
+    payload: { id: number; email: string };
+    user: { id: number; email: string };
+  }
+}
+
+const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
+// const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:5173", "http://localhost:3000"];
 
 const buildServer = () => {
   const fastify = Fastify({
     logger: true
   });
-  
-  fastify.get("/api/hello", async () => {
-    return { message: "Hello from API" };
+
+  if (!process.env.JWT_SECRET) {
+    fastify.log.warn("JWT_SECRET is not set, using an insecure fallback.");
+  }
+
+  fastify.register(fastifyJwt, {
+    secret: JWT_SECRET
   });
 
-  // Путь к клиентской сборке: dist/client
+  // fastify.register(fastifyCors, {
+  //   origin: ALLOWED_ORIGINS,
+  //   credentials: true,
+  //   methods: [HTTP_METHODS.GET, HTTP_METHODS.POST, HTTP_METHODS.PUT, HTTP_METHODS.DELETE],
+  //   allowedHeaders: ["Content-Type", "Authorization"]
+  // });
+
+  fastify.post(API_SIGNUP, async (request, reply) =>
+    signUpHandler(request, reply, fastify));
+
+  fastify.post(API_SIGNIN, async (request, reply) =>
+    signInHandler(request, reply, fastify));
+
   fastify.register(fastifyStatic, {
-    root: path.join(__dirname, "client"),
-    prefix: "/",
+    root: path.join(__dirname, STATIC_ROOT),
+    prefix: STATIC_PREFIX
   });
 
-  fastify.setNotFoundHandler((req, reply) => {
-    const url = req.raw.url || "";
-
-    if (url.startsWith("/api")) {
-      return reply.status(404).send({ error: "Not Found" });
-    }
-    
-    return reply.sendFile("index.html");
-  });
+  fastify.setNotFoundHandler(notFoundHandler);
 
   return fastify;
 };
