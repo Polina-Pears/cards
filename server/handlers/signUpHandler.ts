@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { hashPassword } from "../utils/hashPassword";
 import RegistrationBody from "../type/RegistrationBody";
 
-export const signUpHandler = async (
+export const signupHandler = async (
     request: FastifyRequest,
     reply: FastifyReply,
     fastify: FastifyInstance

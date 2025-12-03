@@ -4,8 +4,8 @@ import fastifyJwt from "@fastify/jwt";
 import fastifyStatic from "@fastify/static";
 import Fastify from "fastify";
 import path from "path";
-import { signUpHandler } from "./handlers/signUpHandler";
-import { signInHandler } from "./handlers/signInHandler.ts";
+import { signupHandler } from "./handlers/signupHandler";
+import { signinHandler } from "./handlers/signinHandler";
 import { notFoundHandler } from "./handlers/notFoundHandler";
 import {
   API_SIGNUP,
@@ -48,10 +48,10 @@ const buildServer = () => {
   // });
 
   fastify.post(API_SIGNUP, async (request, reply) =>
-    signUpHandler(request, reply, fastify));
+    signupHandler(request, reply, fastify));
 
   fastify.post(API_SIGNIN, async (request, reply) =>
-    signInHandler(request, reply, fastify));
+    signinHandler(request, reply, fastify));
 
   fastify.register(fastifyStatic, {
     root: path.join(__dirname, STATIC_ROOT),

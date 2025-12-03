@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import AuthBody from "../type/AuthBody";
 
 
-export const signInHandler = async (
+export const signinHandler = async (
     request: FastifyRequest,
     reply: FastifyReply,
     fastify: FastifyInstance
