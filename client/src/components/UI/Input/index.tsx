@@ -1,4 +1,7 @@
 import { useId, type InputHTMLAttributes } from "react";
+import classNames from "classnames";
+import style from './input.module.scss'
+
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     label?: string;
@@ -25,31 +28,21 @@ const Input = ({
 
     return (
         <div className={containerClassName}>
-            {label && (
-                <label
-                    htmlFor={inputId}
-                    style={{ display: "block", marginBottom: 4, fontWeight: 600 }}
-                >
-                    {label}
-                </label>
-            )}
+            { label && ( <label htmlFor={inputId}>{label}</label> ) }
             <input
                 {...rest}
                 id={inputId}
-                className={className}
+                className={classNames(className, style.input)}
                 aria-invalid={Boolean(error)}
                 aria-describedby={assistiveId}
+
             />
             { errorMessage ? (
-                <div
-                    id={assistiveId}
-                >
+                <div id={assistiveId} >
                     {errorMessage}
                 </div>
             ) : helperText ? (
-                <div
-                    id={assistiveId}
-                >
+                <div id={assistiveId} >
                     {helperText}
                 </div>
             ) : null}

@@ -1,57 +1,24 @@
 import dotenv from "dotenv";
-import fastifyJwt from "@fastify/jwt";
-// import fastifyCors from "@fastify/cors";
 import fastifyStatic from "@fastify/static";
 import Fastify from "fastify";
 import path from "path";
-import { signupHandler } from "./handlers/signupHandler";
-import { signinHandler } from "./handlers/signinHandler";
 import { notFoundHandler } from "./handlers/notFoundHandler";
-import {
-  API_SIGNUP,
-  API_SIGNIN,
-  STATIC_PREFIX,
-  STATIC_ROOT,
-  // HTTP_METHODS
-} from "./constants/api";
-
+import { STATIC_PREFIX, STATIC_ROOT } from "./constants/api";
+import dbPlugin from "./plugins/dbPlugin";
+import jwtPlugin from "./plugins/jwtPlugin";
+import routes from "./routes";
+import { serializerCompiler, validatorCompiler, ZodTypeProvider } from "fastify-type-provider-zod";
 dotenv.config();
 
-declare module "@fastify/jwt" {
-  interface FastifyJWT {
-    payload: { id: number; email: string };
-    user: { id: number; email: string };
-  }
-}
-
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
-// const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:5173", "http://localhost:3000"];
-
 const buildServer = () => {
-  const fastify = Fastify({
-    logger: true
-  });
+  const fastify = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>(); 
 
-  if (!process.env.JWT_SECRET) {
-    fastify.log.warn("JWT_SECRET is not set, using an insecure fallback.");
-  }
+  fastify.setValidatorCompiler(validatorCompiler);
+  fastify.setSerializerCompiler(serializerCompiler);
 
-  fastify.register(fastifyJwt, {
-    secret: JWT_SECRET
-  });
-
-  // fastify.register(fastifyCors, {
-  //   origin: ALLOWED_ORIGINS,
-  //   credentials: true,
-  //   methods: [HTTP_METHODS.GET, HTTP_METHODS.POST, HTTP_METHODS.PUT, HTTP_METHODS.DELETE],
-  //   allowedHeaders: ["Content-Type", "Authorization"]
-  // });
-
-  fastify.post(API_SIGNUP, async (request, reply) =>
-    signupHandler(request, reply, fastify));
-
-  fastify.post(API_SIGNIN, async (request, reply) =>
-    signinHandler(request, reply, fastify));
+  fastify.register(dbPlugin);
+  fastify.register(jwtPlugin);
+  fastify.register(routes);
 
   fastify.register(fastifyStatic, {
     root: path.join(__dirname, STATIC_ROOT),

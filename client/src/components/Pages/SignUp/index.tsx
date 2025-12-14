@@ -1,40 +1,95 @@
 import React, { useState } from "react";
 import { useMutation } from '@tanstack/react-query'
-// import { useNavigate } from 'react-router-dom'
 import Button from "../../UI/Button";
 import Input from "../../UI/Input";
 import signupApi from './signupApi'
+import { useNavigate } from "react-router-dom";
+import validateEmail from "../../../Utils/validateEmail";
+import { validatePassword } from "../../../Utils/validatePassword";
+import style from './signup.module.scss'
 
 function SignUp() {
+
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
-    // const navigate = useNavigate();
+    const [errorEmail, setErrorEmail] = useState("");
+    const [errorPassword, setErrorPassword] = useState("");
+    const [errorName, setErrorName] = useState("");
+    const [errorLogin, setErrorLogin] = useState("");
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [errorServer, setErrorServer] = useState("");
+    const navigate = useNavigate();
 
     const mutation = useMutation({
-        mutationFn: (body: { login: string; password: string }) => signupApi(body),
+        mutationFn: (body: { login: string; password: string, email: string, name: string }) => signupApi(body),
         onSuccess: (data) => {
-            console.log(data);
-            // if (data.token) {
-            //     localStorage.setItem('token', data.token);
-            // }
-            // navigate('/', { replace: true });
-        }
+            if (data.token)
+                localStorage.setItem('token', data.token);
+            navigate('/', { replace: true });
+        },
+        onError: (error: any) => {
+            setErrorServer(error.message || 'Ошибка сервера');   }
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        mutation.mutate({ login, password });
+        const emailValid = validateEmail(email);
+        const passwordValid = validatePassword(password);
+        const nameValid = name.trim().length > 0;
+        const loginValid = login.trim().length > 0;
+
+        if (!loginValid) {
+            setErrorLogin("Заполните логин");
+            return;
+        }
+
+        if (!nameValid) {
+            setErrorName("Заполните имя");
+            return;
+        }
+
+        if (!emailValid.valid) {
+            setErrorEmail(emailValid.error);
+            return;
+        }
+
+        if (!passwordValid.valid) {
+            setErrorPassword(passwordValid.error);
+            return;
+        }
+
+        mutation.mutate({ login, password, email, name });
     }
 
     return (
-        <div>
-            <div>Регистрация</div>
-            <form onSubmit={handleSubmit}>
+        <div className={style.box}>
+            <form onSubmit={handleSubmit} className={style.form}>
+                <h3>Регистрация</h3>
+                <div>
+                    <Input
+                        label="Имя"
+                        value={name}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                        error={errorName}
+                    />
+                </div>
                 <div>
                     <Input
                         label="Логин"
                         value={login}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)}
+                        error={errorLogin}  
+                    />
+                </div>
+                <div>
+                    <Input
+                        label="Электронная почта"
+                        type="email"
+                        value={email}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                        error={errorEmail}
                     />
                 </div>
                 <div>
@@ -42,7 +97,20 @@ function SignUp() {
                         label="Пароль"
                         value={password}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                        type={passwordVisible ? 'text' : 'password'}
+                        error={errorPassword}
                     />
+                </div>
+                <div>
+                    <Button
+                        type="button"
+                        onClick={() => setPasswordVisible(!passwordVisible)}
+                    >
+                        {passwordVisible ? 'Скрыть пароль' : 'Показать пароль'}
+                    </Button>
+                </div>
+                <div>
+                    {errorServer && <div style={{ color: 'red' }}>{errorServer}</div>}
                 </div>
                 <div>
                     <Button

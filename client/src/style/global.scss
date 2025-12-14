@@ -1,0 +1,255 @@
+/* =========================
+   Design tokens (rem-based)
+========================= */
+
+:root {
+    /* Font sizes (Perfect Fourth from 14px) */
+    --fs-xs: 0.7143rem; /* 10px */
+    --fs-sm: 0.8571rem; /* 12px */
+    --fs-base: 1rem; /* 14px */
+    --fs-h6: 1.1429rem; /* 16px */
+    --fs-h5: 1.3571rem; /* 19px */
+    --fs-h4: 1.7857rem; /* 25px */
+    --fs-h3: 2.3571rem; /* 33px */
+    --fs-h2: 3.1429rem; /* 44px */
+    --fs-h1: 4.2143rem; /* 59px */
+
+    /* Line-heights */
+    --lh-tight: 1.2;
+    --lh-snug: 1.3;
+    --lh-base: 1.5;
+
+    /* Spacing (4px grid => 0.2857rem) */
+    --sp-0: 0;
+    --sp-1: 0.2857rem; /* 4px  */
+    --sp-2: 0.5714rem; /* 8px  */
+    --sp-3: 0.8571rem; /* 12px */
+    --sp-4: 1.1429rem; /* 16px */
+    --sp-5: 1.4286rem; /* 20px */
+    --sp-6: 1.7143rem; /* 24px */
+    --sp-8: 2.2857rem; /* 32px */
+    --sp-10: 2.8571rem; /* 40px */
+    --sp-12: 3.4286rem; /* 48px */
+
+    /* Radius */
+    --r-sm: 0.5714rem; /* 8px */
+    --r-md: 0.8571rem; /* 12px */
+    --r-lg: 1.1429rem; /* 16px */
+
+}
+
+/* =========================
+    Reset / Normalize
+========================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+html {
+    font-size: 14px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans",
+        "Apple Color Emoji", "Segoe UI Emoji";
+    color: var(--c-fg);
+    background: var(--c-bg);
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+img {
+    height: auto;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#root,
+#__next {
+    min-height: 100%;
+    isolation: isolate;
+}
+
+:focus-visible {
+    outline: none;
+    outline-offset: none;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* =========================
+    Typography (tags)
+========================= */
+
+p {
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+    margin-bottom: 0;
+}
+
+small {
+    font-size: var(--fs-sm);
+    line-height: 1.4;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    overflow-wrap: break-word;
+    font-weight: 600;
+    margin: 0 ;
+}
+
+h1 {
+    font-size: var(--fs-h1);
+    line-height: var(--lh-tight);
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-size: var(--fs-h2);
+    line-height: var(--lh-tight);
+    letter-spacing: -0.01em;
+}
+
+h3 {
+    font-size: var(--fs-h3);
+    line-height: var(--lh-snug);
+}
+
+h4 {
+    font-size: var(--fs-h4);
+    line-height: var(--lh-snug);
+}
+
+h5 {
+    font-size: var(--fs-h5);
+    line-height: var(--lh-base);
+    margin-bottom: 0.5em;
+}
+
+h6 {
+    font-size: var(--fs-h6);
+    line-height: var(--lh-base);
+    margin-bottom: 0.5em;
+}
+
+/* Optional: базовый стиль для читаемых списков (если используешь ul/ol с list-style) */
+.typography ul {
+    list-style: disc;
+    padding-left: var(--sp-6);
+}
+
+.typography ol {
+    list-style: decimal;
+    padding-left: var(--sp-6);
+}
+
+.typography li {
+    margin-bottom: var(--sp-2);
+}
+
+/* =========================
+   Utilities (optional)
+========================= */
+
+.text-xs {
+    font-size: var(--fs-xs);
+    line-height: 1.4;
+}
+
+.text-sm {
+    font-size: var(--fs-sm);
+    line-height: 1.4;
+}
+
+.text-base {
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+}
+
+/* =========================
+   Forms (inputs/buttons)
+========================= */
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+    color: inherit;
+}
+
+
+@media (max-width: 768px) {
+    :root {
+        /* мягче заголовки на мобилке */
+        --fs-h1: 3rem;
+        /* 42px */
+        --fs-h2: 2.5714rem;
+        /* 36px */
+        --fs-h3: 2rem;
+        /* 28px */
+        --fs-h4: 1.5714rem;
+        /* 22px */
+    }
+}

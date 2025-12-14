@@ -1,13 +1,60 @@
+version: "3.9"
+
 services:
+  # --- БЭК ---
   cards-app:
-    build:  
+    build:
       context: .
       dockerfile: Dockerfile
     image: cards-app-prod
     container_name: cards-app
     restart: unless-stopped
-    env_file:              
+    env_file:
       - .env
-
-    ports:                 
+    ports:
       - "3000:3000"
+    depends_on:
+      - postgres         
+    networks:
+      - app_network
+
+  # --- POSTGRES ---
+  postgres:
+    image: postgres:16
+    container_name: postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: supran
+      POSTGRES_PASSWORD: 7NX7giLy!QDtFhCfW_
+      POSTGRES_DB: local_cards_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  # --- PGADMIN ---
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@root.com
+      PGADMIN_DEFAULT_PASSWORD: 38jn*Lgf68BKaT_DHj
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - app_network
+
+# --- VOLUMES ---
+volumes:
+  pgdata:
+  pgadmin_data:
+
+# --- NETWORK ---
+networks:
+  app_network:
+    driver: bridge
