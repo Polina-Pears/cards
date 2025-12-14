@@ -24,9 +24,9 @@ services:
     container_name: postgres-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: supran
-      POSTGRES_PASSWORD: 7NX7giLy!QDtFhCfW_
-      POSTGRES_DB: local_cards_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -38,8 +38,8 @@ services:
     container_name: pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: root@root.com
-      PGADMIN_DEFAULT_PASSWORD: 38jn*Lgf68BKaT_DHj
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "5050:80"
     depends_on:
