@@ -4,9 +4,12 @@ import Button from "../../UI/Button";
 import Input from "../../UI/Input";
 import signupApi from './signupApi'
 import { useNavigate } from "react-router-dom";
-import validateEmail from "../../../Utils/validateEmail";
-import { validatePassword } from "../../../Utils/validatePassword";
+import validateEmail from "../../../utils/validateEmail";
+import { validatePassword } from "../../../utils/validatePassword";
 import style from './signup.module.scss'
+import EyeOff from "./../../../assets/icons/eye-closed.svg?react";
+import EyeOn from "./../../../assets/icons/eye-open.svg?react";
+
 
 function SignUp() {
 
@@ -30,7 +33,8 @@ function SignUp() {
             navigate('/', { replace: true });
         },
         onError: (error: any) => {
-            setErrorServer(error.message || 'Ошибка сервера');   }
+            setErrorServer(error.message || 'Ошибка сервера');
+        }
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -42,21 +46,21 @@ function SignUp() {
 
         if (!loginValid) {
             setErrorLogin("Заполните логин");
-            return;
         }
 
         if (!nameValid) {
             setErrorName("Заполните имя");
-            return;
         }
 
         if (!emailValid.valid) {
             setErrorEmail(emailValid.error);
-            return;
         }
 
         if (!passwordValid.valid) {
             setErrorPassword(passwordValid.error);
+        }
+
+        if (!emailValid.valid || !passwordValid.valid || !nameValid || !loginValid) {
             return;
         }
 
@@ -80,7 +84,7 @@ function SignUp() {
                         label="Логин"
                         value={login}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)}
-                        error={errorLogin}  
+                        error={errorLogin}
                     />
                 </div>
                 <div>
@@ -92,21 +96,20 @@ function SignUp() {
                         error={errorEmail}
                     />
                 </div>
-                <div>
+                <div className={style.passwordRow}>
                     <Input
+                        containerClassName={style.passwordInput}
                         label="Пароль"
                         value={password}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                         type={passwordVisible ? 'text' : 'password'}
                         error={errorPassword}
                     />
-                </div>
-                <div>
                     <Button
                         type="button"
                         onClick={() => setPasswordVisible(!passwordVisible)}
                     >
-                        {passwordVisible ? 'Скрыть пароль' : 'Показать пароль'}
+                        {passwordVisible ? (<EyeOff />) : (<EyeOn />)}
                     </Button>
                 </div>
                 <div>

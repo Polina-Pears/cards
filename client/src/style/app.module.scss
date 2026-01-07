@@ -1,3 +1,5 @@
+@use '_tokens.scss' as *;
+
 .page{
     min-height: 100vh;
     background: linear-gradient(45deg, #121212, #1c1e24);
@@ -6,8 +8,8 @@
 
 .nav{
     display: flex;
-    gap: var(--sp-3);
-    padding: var(--sp-2) 0;
+    gap: $sp-3;
+    padding: $sp-2 0;
     justify-content: center;
     align-items: center;
 }

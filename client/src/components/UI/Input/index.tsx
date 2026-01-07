@@ -27,7 +27,7 @@ const Input = ({
     const assistiveId = errorMessage || helperText ? `${inputId}-assistive` : undefined;
 
     return (
-        <div className={containerClassName}>
+        <div className={classNames(containerClassName, style.container)}>
             { label && ( <label htmlFor={inputId}>{label}</label> ) }
             <input
                 {...rest}
@@ -38,7 +38,7 @@ const Input = ({
 
             />
             { errorMessage ? (
-                <div id={assistiveId} >
+                <div id={assistiveId} className={style.error}>
                     {errorMessage}
                 </div>
             ) : helperText ? (

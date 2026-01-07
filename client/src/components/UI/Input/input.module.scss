@@ -1,14 +1,27 @@
+@use '../../../style/_tokens.scss' as *;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: $sp-1;
+}
+
 .input {
     display: block;
     width: 100%;
     padding: 10px 12px;
-    font-size: var(--fs-sm);
-    border-radius: var(--r-sm);
-    background: #ffffff94;
-    border: 1px solid #222;
+    font-size: $fs-sm;
+    border-radius: $r-sm;
+    border: 1px solid #fff;
+    background-color: transparent;
 }
 
 .label {
     display: block;
     font-size: 1rem;
+}
+
+.error {
+    color: #ff4d4f;
+    font-size: $fs-xs;
 }

@@ -1,0 +1,50 @@
+@use '../../../style/_tokens.scss' as *;
+
+.button {
+    border-radius: $r-md;
+    border: none;
+    cursor: pointer;
+    border: 0;
+}
+
+.lg {
+    padding: $sp-4 $sp-6;
+    font-size: $fs-base;
+}
+
+.md {
+    padding: $sp-3 $sp-5;
+    font-size: $fs-sm;
+    line-height: $lh-snug;
+}
+
+.sm {
+    padding: $sp-2 $sp-4;
+    font-size: $fs-xs;
+    line-height: $lh-tight;
+}
+
+.primary {
+    background-color: #393b4c;
+    color: #ffffff;
+}   
+
+.secondary {
+    background-color: #545454;
+    color: #fff;
+}
+
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    cursor: progress;
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.fullWidth {
+    width: 100%;
+}
