@@ -20,7 +20,7 @@ COPY server ./server
 
 # зависимости клиента
 COPY client/package*.json ./client/
-RUN cd client && npm ci
+RUN cd client && npm install
 
 # исходники клиента
 COPY client ./client
