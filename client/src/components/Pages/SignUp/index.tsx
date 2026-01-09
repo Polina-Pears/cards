@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import { useMutation } from '@tanstack/react-query'
 import Button from "../../UI/Button";
 import Input from "../../UI/Input";
-import signupApi from './signupApi'
+// import signupApi from './signupApi'
 import { useNavigate } from "react-router-dom";
 import validateEmail from "../../../utils/validateEmail";
 import { validatePassword } from "../../../utils/validatePassword";
 import style from './signup.module.scss'
 import EyeOff from "./../../../assets/icons/eye-closed.svg?react";
 import EyeOn from "./../../../assets/icons/eye-open.svg?react";
+import { useAuthStore } from "../../../store/useAuth";
 
 
 function SignUp() {
-
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [login, setLogin] = useState("");
@@ -23,13 +23,12 @@ function SignUp() {
     const [errorLogin, setErrorLogin] = useState("");
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [errorServer, setErrorServer] = useState("");
+    const auth = useAuthStore();
     const navigate = useNavigate();
 
     const mutation = useMutation({
-        mutationFn: (body: { login: string; password: string, email: string, name: string }) => signupApi(body),
-        onSuccess: (data) => {
-            if (data.token)
-                localStorage.setItem('token', data.token);
+        mutationFn: (body: { login: string; password: string, email: string, name: string }) => auth.signup(body),
+        onSuccess: () => { 
             navigate('/', { replace: true });
         },
         onError: (error: any) => {
@@ -70,13 +69,14 @@ function SignUp() {
     return (
         <div className={style.box}>
             <form onSubmit={handleSubmit} className={style.form}>
-                <h3>Регистрация</h3>
+                <h1>Регистрация</h1>
                 <div>
                     <Input
                         label="Имя"
                         value={name}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                         error={errorName}
+                        name="name"
                     />
                 </div>
                 <div>
@@ -85,6 +85,7 @@ function SignUp() {
                         value={login}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLogin(e.target.value)}
                         error={errorLogin}
+                        name="login"
                     />
                 </div>
                 <div>
@@ -94,6 +95,7 @@ function SignUp() {
                         value={email}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                         error={errorEmail}
+                        name="email"
                     />
                 </div>
                 <div className={style.passwordRow}>
@@ -104,6 +106,7 @@ function SignUp() {
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                         type={passwordVisible ? 'text' : 'password'}
                         error={errorPassword}
+                        name="password"
                     />
                     <Button
                         type="button"
@@ -112,9 +115,7 @@ function SignUp() {
                         {passwordVisible ? (<EyeOff />) : (<EyeOn />)}
                     </Button>
                 </div>
-                <div>
-                    {errorServer && <div style={{ color: 'red' }}>{errorServer}</div>}
-                </div>
+                {errorServer && <div style={{ color: 'red' }}>{errorServer}</div>}
                 <div>
                     <Button
                         type="submit"

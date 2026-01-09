@@ -2,6 +2,7 @@ import fastifyJwt from "@fastify/jwt";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import JWT_SECRET from "../constants/JWT_SECRET";
 import fastifyPlugin from "fastify-plugin";
+import fastifyCookie from "@fastify/cookie";
 
 declare module "fastify" {
     interface FastifyInstance {
@@ -16,19 +17,24 @@ declare module "@fastify/jwt" {
 }
 
 async function jwtPlugin(fastify: FastifyInstance) {
+
     fastify.register(fastifyJwt, {
-        secret: JWT_SECRET
+        secret: JWT_SECRET,
+        cookie: {
+            cookieName: "token",
+            signed: false,
+        },
     });
 
     fastify.decorate(
         "authenticate",
         async (request: FastifyRequest, reply: FastifyReply) => {
             try {
-                await request.jwtVerify();
+                await request.jwtVerify();  
             } catch (err) {
                 request.log.error(err);
                 return reply.code(401).send({ message: "Unauthorized" });
-            }
+            } 
         }
     );
 }

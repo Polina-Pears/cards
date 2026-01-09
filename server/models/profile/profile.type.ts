@@ -5,4 +5,5 @@ export default interface ProfileType {
     created_at: string;
     password_hash?: string;
     name: string;
+    yandex_id?: string;
 }

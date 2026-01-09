@@ -1,49 +1,42 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { hashPassword } from "../utils/hashPassword";
+import { FastifyRequest, FastifyReply } from "fastify";
 import Profile from "../models/profile";
+import { SigninBody } from "../shema/signin.body";
+import { verifyPassword } from "../utils/hashPassword";
 
 export const signinHandler = async (
-    request: FastifyRequest,
-    reply: FastifyReply) => {
+    request: FastifyRequest<{ Body: SigninBody }>,
+    reply: FastifyReply
+) => {
 
-    // // Создаём экземпляр модели Profile
-    // const profileModel = new Profile(request.server.pg);
+    const profileModel = new Profile(request.server.pg);
+    const { login, password } = request.body as { login: string; password: string };
 
-    // try {
+    try {
+        // ищем пользователя по логину
+        const user = await profileModel.getHashByLogin(login);
+        if (user === -1) {
+            throw new Error('User not found');
+        }
+        // проверяем пароль
+        const isPasswordValid = await verifyPassword(password, user.password_hash);
+        if (!isPasswordValid) {
+            throw new Error('Invalid password');
+        }
+        
+        // создаем JWT токен
+        const token = request.server.jwt.sign({ id: user.id });
+        reply.setCookie("token", token, {
+            httpOnly: true,   
+            path: "/",        
+        });
 
-    //     // Проверяем, существует ли пользователь с таким логином или email
-    //     const existingLogin = await profileModel.existsByLogin(login);
-    //     if (existingLogin)
-    //         return reply
-    //             .status(409)
-    //             .send({ error: "User with this login already exists" });
+        return reply.status(201).send({
+            user: { id: user.id },
+            token
+        });
 
-    //     const existingEmail = await profileModel.existsByEmail(email);
-    //     if (existingEmail)
-    //         return reply
-    //             .status(409)
-    //             .send({ error: "User with this email already exists" });
-
-    //     // Хешируем пароль 
-    //     const passwordHash = await hashPassword(password);
-
-    //     // Создаём нового пользователя
-    //     const result = await profileModel.create(
-    //         login,
-    //         passwordHash,
-    //         email,
-    //         name
-    //     );
-
-    //     const token = request.server.jwt.sign({ id: result });
-
-    //     return reply.status(201).send({
-    //         user: { id: result },
-    //         token
-    //     });
-
-    // } catch (err: any) {
-    //     request.server.log.error({ err }, "Error during signup");
-    //     return reply.status(500).send({ error: "Internal server error", err });
-    // }
+    } catch (err: any) {
+        request.server.log.error({ err }, "Error during signin");
+        return reply.status(401).send({ error: "Invalid login or password", err });
+    }
 };

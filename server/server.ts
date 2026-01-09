@@ -8,10 +8,19 @@ import dbPlugin from "./plugins/dbPlugin";
 import jwtPlugin from "./plugins/jwtPlugin";
 import routes from "./routes";
 import { serializerCompiler, validatorCompiler, ZodTypeProvider } from "fastify-type-provider-zod";
+import cors from "@fastify/cors";
+import fastifyCookie from "@fastify/cookie";
+
 dotenv.config();
 
 const buildServer = () => {
-  const fastify = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>(); 
+  const fastify = Fastify({ logger: true }).withTypeProvider<ZodTypeProvider>();
+
+  fastify.register(fastifyCookie);
+  fastify.register(cors, {
+    origin: ["http://localhost:3000"],
+    credentials: true,                
+  });
 
   fastify.setValidatorCompiler(validatorCompiler);
   fastify.setSerializerCompiler(serializerCompiler);

@@ -1,0 +1,30 @@
+@use '../../../style/_tokens.scss' as *;
+
+.box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    gap: $sp-3;
+    width: 440px;
+    background-color: #1E1F24;
+    color: #fff;
+    padding: $sp-8;
+    border-radius: $r-sm;
+}
+
+.passwordRow{
+    display: flex;
+    gap: $sp-2;
+    align-items: flex-end;
+}
+
+.passwordInput{
+    flex-grow: 1;
+    flex-shrink: 0;
+}

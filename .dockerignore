@@ -1,9 +1,11 @@
-node_modules
-client/node_modules
-dist
 .git
 .gitignore
 Dockerfile
 npm-debug.log
 .env
 .vscode
+**/node_modules
+**/.npm
+**/dist
+**/build
+**/.cache

@@ -7,9 +7,8 @@ export const signupHandler = async (
         request: FastifyRequest<{ Body: SignupBody }>,
         reply: FastifyReply
     ) => {
-    const { login, password, email, name } = request.body
-
-    // Создаём экземпляр модели Profile
+        
+    const { login, password, email, name } = request.body 
     const profileModel = new Profile(request.server.pg);
 
     try {
@@ -37,8 +36,13 @@ export const signupHandler = async (
             email,
             name
         );
+        
         // Генерируем JWT токен для нового пользователя
         const token = request.server.jwt.sign({ id: result });
+        reply.setCookie("token", token, {
+            httpOnly: true,   
+            path: "/",        
+        });
 
         return reply.status(201).send({
             user: { id: result },
