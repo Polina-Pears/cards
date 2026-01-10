@@ -32,14 +32,21 @@ export const yandexCallbackHandler = async (
     reply.clearCookie("yandex_oauth_state", { path: "/" });
 
     try {
+
         // Шаг 1: Обменяем код на access token
-        const tokenResponse = await axios.post(
-            YANDEX_CONFIG.TOKEN_URL,
-            {
-                grant_type: "authorization_code",
-                code, 
-            }
-        );
+        const params = new URLSearchParams();
+        params.set("grant_type", "authorization_code");
+        params.set("code", code);
+
+        const tokenResponse = await axios.post(YANDEX_CONFIG.TOKEN_URL, params.toString(), {
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            auth: {
+                username: YANDEX_CONFIG.CLIENT_ID,
+                password: YANDEX_CONFIG.CLIENT_SECRET,
+            },
+        });
+
+        
         request.server.log.info({ tokenResponse: tokenResponse.data }, "Yandex token response");
         const accessToken = tokenResponse.data.access_token;
 
