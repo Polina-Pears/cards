@@ -18,7 +18,7 @@ const buildServer = () => {
 
   fastify.register(fastifyCookie);
   fastify.register(cors, {
-    origin: ["http://localhost:3000"],
+    origin: ["http://85.198.87.33:3000"],
     credentials: true,                
   });
 

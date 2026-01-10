@@ -78,7 +78,7 @@ function SignIn() {
                     </Button>
                 </div>
                 <div>
-                    <a href="http://localhost:3000/api/auth/yandex">Войти через Яндекс</a>
+                    <a href="http://85.198.87.33:3000/api/auth/yandex">Войти через Яндекс</a>
                 </div>
             </form>
         </div>

@@ -92,7 +92,7 @@ export const yandexCallbackHandler = async (
         });
 
         // Шаг 7: Перенаправляем пользователя на фронтенд 
-        const redirectUrl = `${process.env.CLIENT_URL || "http://localhost:5173"}`;
+        const redirectUrl = `${process.env.CLIENT_URL || "http://85.198.87.33:5173"}`;
         return reply.redirect(redirectUrl);
 
     } catch (err: any) {
